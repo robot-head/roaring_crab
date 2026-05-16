@@ -4,7 +4,9 @@
 //! - Unix: file path under runtime dir
 //! - Windows: named pipe
 
-use interprocess::local_socket::{GenericFilePath, GenericNamespaced, Name, ToFsName, ToNsName};
+use interprocess::local_socket::{GenericFilePath, Name, ToFsName};
+#[cfg(windows)]
+use interprocess::local_socket::{GenericNamespaced, ToNsName};
 
 /// Returns the platform-appropriate socket name. Honors `RC_SOCKET_PATH` env var
 /// for tests (overrides the default location).
