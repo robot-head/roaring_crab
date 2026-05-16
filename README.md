@@ -14,8 +14,14 @@ Every hook event in Claude Code (PreToolUse, Stop, Notification, etc.) triggers 
 
 This plugin ships prebuilt binaries under `bin/<platform>/`. No Rust toolchain required to use it.
 
-1. Add this repo to Claude Code as a plugin (per Claude Code's plugin install docs).
-2. That's it. On the first hook fire, the launcher downloads the platform-appropriate binary archive from this repo's latest GitHub Release into `bin/<platform>/`. Subsequent events reuse the cached binary and the lazy-spawned daemon.
+Inside Claude Code, run:
+
+```
+/plugin marketplace add robot-head/roaring_crab
+/plugin install roaring-crab@roaring-crab
+```
+
+That's it. On the first hook fire, the launcher downloads the platform-appropriate binary archive from this repo's latest GitHub Release into `bin/<platform>/`. Subsequent events reuse the cached binary and the lazy-spawned daemon.
 
 The download happens silently; if it fails (offline, GitHub down), the hook exits 0 and the next event will retry. Until the first download completes, the very first hook fire is silent.
 
