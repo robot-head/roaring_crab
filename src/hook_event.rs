@@ -1,7 +1,20 @@
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
+use wincode::{SchemaRead, SchemaWrite};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, clap::ValueEnum)]
+#[derive(
+    Debug,
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    Hash,
+    Serialize,
+    Deserialize,
+    SchemaWrite,
+    SchemaRead,
+    clap::ValueEnum,
+)]
 #[clap(rename_all = "PascalCase")]
 pub enum HookEvent {
     SessionStart,
