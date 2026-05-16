@@ -26,7 +26,7 @@ clap = { version = "4", features = ["derive"] }
 serde = { version = "1", features = ["derive"] }
 bincode = "1.3"
 toml = "1.1"
-rand = "0.8"
+rand = "0.10"
 directories = "6"
 cpal = "0.15"
 errno = "0.3"

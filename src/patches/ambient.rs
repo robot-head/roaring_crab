@@ -1,6 +1,6 @@
 use crate::mixer::Voice;
 use crate::patches::{adsr, cents, lp_alpha, phase, rng_for};
-use rand::Rng;
+use rand::RngExt;
 
 const DUR_MS: u32 = 220;
 
@@ -15,11 +15,11 @@ fn dur_samples(sample_rate: u32) -> u32 {
 fn ambient_blip(seed: u64, sample_rate: u32, center_hz: f32) -> Voice {
     let total = dur_samples(sample_rate);
     let mut rng = rng_for(seed);
-    let detune: f32 = rng.gen_range(-14.0..14.0);
-    let fm_index: f32 = rng.gen_range(0.6..1.4);
-    let cutoff_start: f32 = rng.gen_range(4200.0..6200.0);
-    let cutoff_end: f32 = rng.gen_range(700.0..1400.0);
-    let stereo_drift: f32 = rng.gen_range(0.06..0.16);
+    let detune: f32 = rng.random_range(-14.0..14.0);
+    let fm_index: f32 = rng.random_range(0.6..1.4);
+    let cutoff_start: f32 = rng.random_range(4200.0..6200.0);
+    let cutoff_end: f32 = rng.random_range(700.0..1400.0);
+    let stereo_drift: f32 = rng.random_range(0.06..0.16);
 
     let base = center_hz * cents(detune);
     let mod_hz = base * 0.5;
