@@ -33,7 +33,7 @@ errno = "0.3"
 interprocess = "2"
 parking_lot = "0.12"
 anyhow = "1"
-thiserror = "1"
+thiserror = "2"
 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"
