@@ -28,6 +28,10 @@ pub fn write_frame<W: Write>(w: &mut W, event: &PlayEvent) -> Result<(), FrameEr
     }
     w.write_all(&(bytes.len() as u32).to_be_bytes())?;
     w.write_all(&bytes)?;
+    // Force the bytes through; on Windows named pipes a dropped stream can
+    // close before buffered writes are visible to the server, producing
+    // spurious "failed to fill whole buffer" errors on the read side.
+    w.flush()?;
     Ok(())
 }
 
