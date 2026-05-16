@@ -51,3 +51,10 @@ fn assert_variation(event: HookEvent) {
 #[test] fn session_end_varies() { assert_variation(HookEvent::SessionEnd); }
 #[test] fn pre_compact_contract() { assert_patch_contract(HookEvent::PreCompact, 1); }
 #[test] fn pre_compact_varies() { assert_variation(HookEvent::PreCompact); }
+
+#[test] fn notification_contract() { assert_patch_contract(HookEvent::Notification, 1); }
+#[test] fn notification_varies() { assert_variation(HookEvent::Notification); }
+#[test] fn stop_contract() { assert_patch_contract(HookEvent::Stop, 1); }
+#[test] fn stop_varies() { assert_variation(HookEvent::Stop); }
+#[test] fn subagent_stop_contract() { assert_patch_contract(HookEvent::SubagentStop, 1); }
+#[test] fn subagent_stop_varies() { assert_variation(HookEvent::SubagentStop); }
