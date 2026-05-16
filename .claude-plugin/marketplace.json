@@ -1,0 +1,14 @@
+{
+  "name": "roaring-crab",
+  "owner": {
+    "name": "Matthew Stone"
+  },
+  "plugins": [
+    {
+      "name": "roaring-crab",
+      "source": "./",
+      "version": "0.1.0",
+      "description": "Plays generated analog-modeling synth sounds on Claude Code hook events. Cross-platform Rust daemon."
+    }
+  ]
+}
