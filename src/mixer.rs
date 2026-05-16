@@ -1,3 +1,4 @@
+use crate::effects::MasterFx;
 use parking_lot::Mutex;
 use std::sync::atomic::{AtomicU32, Ordering};
 use std::sync::Arc;
@@ -35,6 +36,7 @@ impl Voice {
 pub struct Mixer {
     sample_rate: u32,
     voices: Arc<Mutex<Vec<Voice>>>,
+    fx: Mutex<MasterFx>,
     /// Master volume stored as Q15 (0..=32768).
     master_volume_q15: AtomicU32,
 }
@@ -44,6 +46,7 @@ impl Mixer {
         Self {
             sample_rate,
             voices: Arc::new(Mutex::new(Vec::new())),
+            fx: Mutex::new(MasterFx::new(sample_rate)),
             master_volume_q15: AtomicU32::new((0.7f32 * 32768.0) as u32),
         }
     }
@@ -76,6 +79,7 @@ impl Mixer {
     pub fn render(&self, buf: &mut [f32]) {
         let vol = self.master_volume();
         let mut voices = self.voices.lock();
+        let mut fx = self.fx.lock();
         let frames = buf.len() / 2;
         for frame in 0..frames {
             let mut l = 0.0f32;
@@ -94,8 +98,11 @@ impl Mixer {
                     }
                 }
             }
-            buf[frame * 2] = (l * vol).clamp(-1.0, 1.0);
-            buf[frame * 2 + 1] = (r * vol).clamp(-1.0, 1.0);
+            // Master FX bus: reverb + ping-pong delay run continuously, so
+            // tails extend past voice lifetimes (cathedral / dub feel).
+            let (fl, fr) = fx.process(l, r);
+            buf[frame * 2] = (fl * vol).clamp(-1.0, 1.0);
+            buf[frame * 2 + 1] = (fr * vol).clamp(-1.0, 1.0);
         }
         voices.retain(|v| v.samples_remaining > 0);
     }

@@ -1,5 +1,6 @@
 pub mod audio_sink;
 pub mod config;
+pub mod effects;
 pub mod hook_event;
 pub mod lockfile;
 pub mod logging;

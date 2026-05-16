@@ -57,3 +57,18 @@ pub(crate) fn phase(t: u32, sample_rate: u32, hz: f32) -> f32 {
     let two_pi = std::f32::consts::TAU;
     two_pi * (t as f32 / sample_rate as f32) * hz
 }
+
+/// Convert cents to a frequency ratio. 100 cents = one semitone.
+#[allow(dead_code)]
+pub(crate) fn cents(c: f32) -> f32 {
+    2.0f32.powf(c / 1200.0)
+}
+
+/// One-pole lowpass coefficient suitable for `prev + alpha * (sample - prev)`.
+/// `cutoff_hz` is the -3 dB point.
+#[allow(dead_code)]
+pub(crate) fn lp_alpha(sample_rate: u32, cutoff_hz: f32) -> f32 {
+    let dt = 1.0 / sample_rate as f32;
+    let rc = 1.0 / (std::f32::consts::TAU * cutoff_hz.max(1.0));
+    dt / (rc + dt)
+}
