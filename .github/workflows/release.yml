@@ -1,0 +1,102 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            dir: linux-x86_64
+            ext: ""
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-latest
+            dir: linux-aarch64
+            ext: ""
+            cross: true
+          - target: x86_64-apple-darwin
+            os: macos-latest
+            dir: macos-x86_64
+            ext: ""
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            dir: macos-aarch64
+            ext: ""
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            dir: windows-x86_64
+            ext: ".exe"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - name: Install ALSA dev headers (Linux x86_64)
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        run: sudo apt-get update && sudo apt-get install -y libasound2-dev
+      - name: Install cross + ALSA (Linux aarch64)
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
+        run: |
+          cargo install cross --git https://github.com/cross-rs/cross
+          sudo apt-get update && sudo apt-get install -y libasound2-dev
+      - name: Build (cross)
+        if: matrix.cross
+        run: cross build --release --target ${{ matrix.target }} --bins
+      - name: Build (native)
+        if: '!matrix.cross'
+        run: cargo build --release --target ${{ matrix.target }} --bins
+      - name: Ad-hoc sign (macOS only)
+        if: startsWith(matrix.target, 'aarch64-apple') || startsWith(matrix.target, 'x86_64-apple')
+        run: |
+          codesign --force --sign - target/${{ matrix.target }}/release/roaring-crab
+          codesign --force --sign - target/${{ matrix.target }}/release/roaring-crabd
+      - name: Stage binaries
+        shell: bash
+        run: |
+          mkdir -p artifacts/bin/${{ matrix.dir }}
+          cp target/${{ matrix.target }}/release/roaring-crab${{ matrix.ext }} artifacts/bin/${{ matrix.dir }}/
+          cp target/${{ matrix.target }}/release/roaring-crabd${{ matrix.ext }} artifacts/bin/${{ matrix.dir }}/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bin-${{ matrix.dir }}
+          path: artifacts/bin/${{ matrix.dir }}
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Move binaries into bin/<platform>/
+        run: |
+          for dir in artifacts/bin-*; do
+            name="${dir#artifacts/bin-}"
+            mkdir -p "bin/$name"
+            cp -r "$dir"/* "bin/$name/"
+            chmod +x "bin/$name"/* || true
+          done
+      - name: Commit binaries (release tag only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add bin/
+          git commit -m "Release binaries for ${GITHUB_REF_NAME}" || echo "no changes"
+          git push origin HEAD:main
+      - name: Create release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*
+          generate_release_notes: true
