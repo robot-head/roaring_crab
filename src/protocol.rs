@@ -1,10 +1,11 @@
 use crate::hook_event::HookEvent;
 use serde::{Deserialize, Serialize};
 use std::io::{Read, Write};
+use wincode::{SchemaRead, SchemaWrite};
 
 pub const MAX_FRAME_SIZE: usize = 1024;
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, SchemaWrite, SchemaRead)]
 pub struct PlayEvent {
     pub event: HookEvent,
     pub seed: u64,
@@ -21,12 +22,14 @@ pub enum FrameError {
     Io(#[from] std::io::Error),
     #[error("frame larger than {0} bytes")]
     TooLarge(usize),
+    #[error("encode error: {0}")]
+    Encode(#[from] wincode::WriteError),
     #[error("decode error: {0}")]
-    Decode(#[from] bincode::Error),
+    Decode(#[from] wincode::ReadError),
 }
 
 pub fn write_frame<W: Write>(w: &mut W, event: &PlayEvent) -> Result<(), FrameError> {
-    let bytes = bincode::serialize(event)?;
+    let bytes = wincode::serialize(event)?;
     if bytes.len() > MAX_FRAME_SIZE {
         return Err(FrameError::TooLarge(MAX_FRAME_SIZE));
     }
@@ -48,6 +51,6 @@ pub fn read_frame<R: Read>(r: &mut R) -> Result<PlayEvent, FrameError> {
     }
     let mut payload = vec![0u8; len];
     r.read_exact(&mut payload)?;
-    let event = bincode::deserialize(&payload)?;
+    let event: PlayEvent = wincode::deserialize(&payload)?;
     Ok(event)
 }
