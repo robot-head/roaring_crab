@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/assets/logo.jpg" alt="Roaring Crab logo" width="320">
+</p>
+
 # roaring-crab
 
 A Claude Code plugin that plays generated analog-modeling synth sounds on hook events. Cross-platform (Linux, macOS, Windows). Sounds are abstract and musical — themed signature patches per hook with seeded variation.
@@ -82,4 +86,4 @@ See `docs/superpowers/specs/2026-05-15-roaring-crab-design.md` for the design.
 
 ## License
 
-MIT OR Apache-2.0
+Licensed under the [Apache License, Version 2.0](LICENSE).

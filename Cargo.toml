@@ -3,7 +3,7 @@ name = "roaring-crab"
 version = "0.1.0"
 edition = "2021"
 description = "Claude Code plugin that plays generated analog-modeling synth sounds on hook events"
-license = "MIT OR Apache-2.0"
+license = "Apache-2.0"
 
 [lib]
 path = "src/lib.rs"
