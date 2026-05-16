@@ -37,12 +37,9 @@ const PLATFORMS = {
     daemon: 'roaring-crabd',
     archive: 'roaring-crab-linux-x86_64.tar.gz',
   },
-  'linux-arm64': {
-    dir: 'linux-aarch64',
-    exe: 'roaring-crab',
-    daemon: 'roaring-crabd',
-    archive: 'roaring-crab-linux-aarch64.tar.gz',
-  },
+  // linux-arm64 is intentionally omitted; no prebuilt archive is published
+  // for that platform yet. (cross-compile via `cross` needs ALSA headers
+  // for the target arch in its Docker image, which isn't set up yet.)
   'darwin-x64': {
     dir: 'macos-x86_64',
     exe: 'roaring-crab',

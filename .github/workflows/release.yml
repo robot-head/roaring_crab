@@ -16,12 +16,10 @@ jobs:
             dir: linux-x86_64
             archive: roaring-crab-linux-x86_64.tar.gz
             ext: ""
-          - target: aarch64-unknown-linux-gnu
-            os: ubuntu-latest
-            dir: linux-aarch64
-            archive: roaring-crab-linux-aarch64.tar.gz
-            ext: ""
-            cross: true
+          # aarch64-unknown-linux-gnu is intentionally omitted: cross-compile
+          # via `cross` needs target-arch ALSA headers in the Docker image and
+          # isn't wired up yet. Linux users on aarch64 will need to build from
+          # source until we revisit this.
           - target: x86_64-apple-darwin
             os: macos-latest
             dir: macos-x86_64
@@ -46,16 +44,7 @@ jobs:
       - name: Install ALSA dev headers (Linux x86_64)
         if: matrix.target == 'x86_64-unknown-linux-gnu'
         run: sudo apt-get update && sudo apt-get install -y libasound2-dev
-      - name: Install cross + ALSA (Linux aarch64)
-        if: matrix.target == 'aarch64-unknown-linux-gnu'
-        run: |
-          cargo install cross --git https://github.com/cross-rs/cross
-          sudo apt-get update && sudo apt-get install -y libasound2-dev
-      - name: Build (cross)
-        if: matrix.cross
-        run: cross build --release --target ${{ matrix.target }} --bins
-      - name: Build (native)
-        if: '!matrix.cross'
+      - name: Build
         run: cargo build --release --target ${{ matrix.target }} --bins
       - name: Ad-hoc sign (macOS only)
         if: startsWith(matrix.target, 'aarch64-apple') || startsWith(matrix.target, 'x86_64-apple')
