@@ -44,3 +44,10 @@ fn assert_variation(event: HookEvent) {
 #[test] fn post_tool_use_varies() { assert_variation(HookEvent::PostToolUse); }
 #[test] fn user_prompt_submit_contract() { assert_patch_contract(HookEvent::UserPromptSubmit, 1); }
 #[test] fn user_prompt_submit_varies() { assert_variation(HookEvent::UserPromptSubmit); }
+
+#[test] fn session_start_contract() { assert_patch_contract(HookEvent::SessionStart, 1); }
+#[test] fn session_start_varies() { assert_variation(HookEvent::SessionStart); }
+#[test] fn session_end_contract() { assert_patch_contract(HookEvent::SessionEnd, 1); }
+#[test] fn session_end_varies() { assert_variation(HookEvent::SessionEnd); }
+#[test] fn pre_compact_contract() { assert_patch_contract(HookEvent::PreCompact, 1); }
+#[test] fn pre_compact_varies() { assert_variation(HookEvent::PreCompact); }
