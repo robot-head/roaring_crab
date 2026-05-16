@@ -24,6 +24,9 @@ pub fn socket_name() -> std::io::Result<Name<'static>> {
 
     #[cfg(windows)]
     {
+        if let Ok(pipe) = std::env::var("RC_SOCKET_PIPE") {
+            return Ok(pipe.to_ns_name::<GenericNamespaced>()?.into_owned());
+        }
         let user = std::env::var("USERNAME").unwrap_or_else(|_| "user".to_string());
         let name = format!("roaring-crab-{}", user);
         Ok(name.to_ns_name::<GenericNamespaced>()?.into_owned())

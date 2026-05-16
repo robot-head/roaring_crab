@@ -31,6 +31,9 @@ fn use_null_audio() -> bool {
 }
 
 fn lockfile_path() -> std::path::PathBuf {
+    if let Ok(p) = std::env::var("RC_LOCKFILE") {
+        return std::path::PathBuf::from(p);
+    }
     socket_path::socket_fs_path()
         .map(|p| p.with_extension("lock"))
         .unwrap_or_else(|| std::env::temp_dir().join("roaring-crab.lock"))
