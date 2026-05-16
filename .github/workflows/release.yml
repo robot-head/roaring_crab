@@ -14,23 +14,28 @@ jobs:
           - target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
             dir: linux-x86_64
+            archive: roaring-crab-linux-x86_64.tar.gz
             ext: ""
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-latest
             dir: linux-aarch64
+            archive: roaring-crab-linux-aarch64.tar.gz
             ext: ""
             cross: true
           - target: x86_64-apple-darwin
             os: macos-latest
             dir: macos-x86_64
+            archive: roaring-crab-macos-x86_64.tar.gz
             ext: ""
           - target: aarch64-apple-darwin
             os: macos-latest
             dir: macos-aarch64
+            archive: roaring-crab-macos-aarch64.tar.gz
             ext: ""
           - target: x86_64-pc-windows-msvc
             os: windows-latest
             dir: windows-x86_64
+            archive: roaring-crab-windows-x86_64.zip
             ext: ".exe"
     runs-on: ${{ matrix.os }}
     steps:
@@ -57,46 +62,46 @@ jobs:
         run: |
           codesign --force --sign - target/${{ matrix.target }}/release/roaring-crab
           codesign --force --sign - target/${{ matrix.target }}/release/roaring-crabd
-      - name: Stage binaries
+      - name: Package archive (Unix tar.gz)
+        if: matrix.os != 'windows-latest'
         shell: bash
         run: |
-          mkdir -p artifacts/bin/${{ matrix.dir }}
-          cp target/${{ matrix.target }}/release/roaring-crab${{ matrix.ext }} artifacts/bin/${{ matrix.dir }}/
-          cp target/${{ matrix.target }}/release/roaring-crabd${{ matrix.ext }} artifacts/bin/${{ matrix.dir }}/
+          mkdir -p staging
+          cp target/${{ matrix.target }}/release/roaring-crab staging/
+          cp target/${{ matrix.target }}/release/roaring-crabd staging/
+          chmod +x staging/roaring-crab staging/roaring-crabd
+          tar -czf ${{ matrix.archive }} -C staging roaring-crab roaring-crabd
+      - name: Package archive (Windows zip)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path staging | Out-Null
+          Copy-Item "target\${{ matrix.target }}\release\roaring-crab.exe" staging\
+          Copy-Item "target\${{ matrix.target }}\release\roaring-crabd.exe" staging\
+          Compress-Archive -Force -Path staging\* -DestinationPath ${{ matrix.archive }}
       - uses: actions/upload-artifact@v4
         with:
-          name: bin-${{ matrix.dir }}
-          path: artifacts/bin/${{ matrix.dir }}
+          name: archive-${{ matrix.dir }}
+          path: ${{ matrix.archive }}
 
   publish:
     needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    if: startsWith(github.ref, 'refs/tags/v')
     steps:
-      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
-      - name: Move binaries into bin/<platform>/
+      - name: Flatten archive directory
         run: |
-          for dir in artifacts/bin-*; do
-            name="${dir#artifacts/bin-}"
-            mkdir -p "bin/$name"
-            cp -r "$dir"/* "bin/$name/"
-            chmod +x "bin/$name"/* || true
-          done
-      - name: Commit binaries (release tag only)
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add bin/
-          git commit -m "Release binaries for ${GITHUB_REF_NAME}" || echo "no changes"
-          git push origin HEAD:main
-      - name: Create release
-        if: startsWith(github.ref, 'refs/tags/v')
+          mkdir -p release
+          find artifacts -type f \( -name '*.tar.gz' -o -name '*.zip' \) -exec cp {} release/ \;
+          ls -la release/
+      - name: Create release with archive assets
         uses: softprops/action-gh-release@v2
         with:
-          files: artifacts/**/*
+          files: release/*
           generate_release_notes: true
+          fail_on_unmatched_files: true

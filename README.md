@@ -10,8 +10,12 @@ Every hook event in Claude Code (PreToolUse, Stop, Notification, etc.) triggers 
 
 This plugin ships prebuilt binaries under `bin/<platform>/`. No Rust toolchain required to use it.
 
-1. Clone or add this repo to Claude Code as a plugin (per Claude Code's plugin install docs).
-2. That's it. The first hook event will lazy-spawn the daemon; subsequent events reuse it.
+1. Add this repo to Claude Code as a plugin (per Claude Code's plugin install docs).
+2. That's it. On the first hook fire, the launcher downloads the platform-appropriate binary archive from this repo's latest GitHub Release into `bin/<platform>/`. Subsequent events reuse the cached binary and the lazy-spawned daemon.
+
+The download happens silently; if it fails (offline, GitHub down), the hook exits 0 and the next event will retry. Until the first download completes, the very first hook fire is silent.
+
+**Requirements:** Node.js (always present when running Claude Code), plus the standard archive tools on each platform — `tar`/`gzip` on Unix, PowerShell's `Expand-Archive` on Windows. All of these ship with the OS.
 
 ### Platform notes
 
