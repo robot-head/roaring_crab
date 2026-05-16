@@ -51,10 +51,18 @@ fn main() {
         return;
     }
 
+    // Only Notification carries a repeat_secs; for all other events the field
+    // is None and the daemon's repeat state stays inactive (or gets cleared).
+    let repeat_secs = if cli.event == HookEvent::Notification {
+        cfg.notification_repeat_secs
+    } else {
+        None
+    };
     let play = PlayEvent {
         event: cli.event,
         seed: rand::random(),
-        volume: cfg.master_volume,
+        volume: cfg.volume_for(cli.event),
+        repeat_secs,
     };
 
     if try_connect_and_send(play).is_ok() {

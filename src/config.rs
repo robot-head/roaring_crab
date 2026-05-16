@@ -8,6 +8,13 @@ use std::path::Path;
 pub struct Config {
     pub master_volume: f32,
     pub muted: bool,
+    /// Multiplier applied to the master volume for events that want the user's
+    /// attention (Notification, Stop). Tool/info events use plain master volume.
+    pub attention_volume_boost: f32,
+    /// If `Some(n)`, the daemon re-plays the Notification patch every `n`
+    /// seconds after a Notification fires, until any other hook event arrives
+    /// (which clears the repeat). `None` disables repeating.
+    pub notification_repeat_secs: Option<u32>,
     pub enabled_hooks: HashMap<String, bool>,
 }
 
@@ -20,6 +27,8 @@ impl Default for Config {
         Self {
             master_volume: 0.7,
             muted: false,
+            attention_volume_boost: 1.5,
+            notification_repeat_secs: Some(30),
             enabled_hooks,
         }
     }
@@ -31,6 +40,20 @@ impl Config {
             .get(hook.as_str())
             .copied()
             .unwrap_or(true)
+    }
+
+    /// Effective playback volume for a given hook event. Applies the
+    /// attention boost to events that need user response. Output is clamped
+    /// to [0, 1] so the daemon never gets fed >1.0 (which the mixer would
+    /// clip anyway).
+    pub fn volume_for(&self, hook: HookEvent) -> f32 {
+        let base = self.master_volume;
+        let scaled = if hook.is_attention() {
+            base * self.attention_volume_boost
+        } else {
+            base
+        };
+        scaled.clamp(0.0, 1.0)
     }
 
     pub fn load_or_default(path: &Path) -> Result<Self, ConfigError> {

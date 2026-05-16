@@ -108,6 +108,7 @@ fn daemon_accepts_play_event_over_socket() {
         event: HookEvent::Stop,
         seed: 42,
         volume: 0.5,
+        repeat_secs: None,
     };
 
     let mut stream = connect_to(&socket_name).expect("connect for send");

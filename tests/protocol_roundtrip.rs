@@ -8,6 +8,7 @@ fn play_event_roundtrips_through_frame() {
         event: HookEvent::Stop,
         seed: 0xDEADBEEFCAFEBABE,
         volume: 0.42,
+        repeat_secs: None,
     };
     let mut buf = Vec::new();
     write_frame(&mut buf, &original).unwrap();
@@ -21,6 +22,7 @@ fn trailing_garbage_after_frame_is_ignored_by_read_frame() {
         event: HookEvent::PreToolUse,
         seed: 1,
         volume: 0.5,
+        repeat_secs: None,
     };
     let mut buf = Vec::new();
     write_frame(&mut buf, &event).unwrap();
@@ -44,6 +46,7 @@ fn all_hook_event_variants_serialize() {
             event,
             seed: 7,
             volume: 0.5,
+            repeat_secs: None,
         };
         let mut buf = Vec::new();
         write_frame(&mut buf, &p).unwrap();

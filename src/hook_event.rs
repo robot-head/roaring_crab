@@ -41,6 +41,13 @@ impl HookEvent {
             HookEvent::PreCompact => "PreCompact",
         }
     }
+
+    /// True for events that need the user's attention — these get a louder
+    /// patch and may trigger periodic re-fires until the user responds.
+    /// Tool / lifecycle / debug events are ambient and don't.
+    pub fn is_attention(self) -> bool {
+        matches!(self, HookEvent::Notification | HookEvent::Stop)
+    }
 }
 
 #[derive(Debug, thiserror::Error)]

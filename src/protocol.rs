@@ -9,6 +9,10 @@ pub struct PlayEvent {
     pub event: HookEvent,
     pub seed: u64,
     pub volume: f32,
+    /// For Notification events: if Some(n), the daemon should re-fire this
+    /// patch every n seconds until any other event clears the state. Ignored
+    /// on non-Notification events.
+    pub repeat_secs: Option<u32>,
 }
 
 #[derive(Debug, thiserror::Error)]
