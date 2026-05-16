@@ -6,5 +6,5 @@ pub mod lockfile;
 pub mod logging;
 pub mod audio_sink;
 pub mod mixer;
-pub mod spawn { }
+pub mod spawn;
 pub mod patches;
