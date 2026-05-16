@@ -42,6 +42,12 @@ impl Drop for Lock {
 
 #[cfg(unix)]
 fn pid_alive(pid: u32) -> bool {
+    // pid_t is signed (i32 on Linux/macOS). PIDs ≤ 0 are not real processes
+    // (and `kill(0, …)` / `kill(-1, …)` are special "process group" cases that
+    // would falsely return "alive"). Reject anything outside the valid range.
+    if pid == 0 || pid > libc::pid_t::MAX as u32 {
+        return false;
+    }
     unsafe {
         if libc::kill(pid as libc::pid_t, 0) == 0 {
             return true;

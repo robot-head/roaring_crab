@@ -4,7 +4,7 @@
       {
         "hooks": [
           { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/launch.sh\" SessionStart" },
-          { "type": "command", "command": "cmd /c \"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" SessionStart" }
+          { "type": "command", "command": "\"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" SessionStart" }
         ]
       }
     ],
@@ -12,7 +12,7 @@
       {
         "hooks": [
           { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/launch.sh\" SessionEnd" },
-          { "type": "command", "command": "cmd /c \"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" SessionEnd" }
+          { "type": "command", "command": "\"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" SessionEnd" }
         ]
       }
     ],
@@ -20,7 +20,7 @@
       {
         "hooks": [
           { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/launch.sh\" UserPromptSubmit" },
-          { "type": "command", "command": "cmd /c \"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" UserPromptSubmit" }
+          { "type": "command", "command": "\"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" UserPromptSubmit" }
         ]
       }
     ],
@@ -28,7 +28,7 @@
       {
         "hooks": [
           { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/launch.sh\" PreToolUse" },
-          { "type": "command", "command": "cmd /c \"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" PreToolUse" }
+          { "type": "command", "command": "\"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" PreToolUse" }
         ]
       }
     ],
@@ -36,7 +36,7 @@
       {
         "hooks": [
           { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/launch.sh\" PostToolUse" },
-          { "type": "command", "command": "cmd /c \"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" PostToolUse" }
+          { "type": "command", "command": "\"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" PostToolUse" }
         ]
       }
     ],
@@ -44,7 +44,7 @@
       {
         "hooks": [
           { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/launch.sh\" Notification" },
-          { "type": "command", "command": "cmd /c \"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" Notification" }
+          { "type": "command", "command": "\"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" Notification" }
         ]
       }
     ],
@@ -52,7 +52,7 @@
       {
         "hooks": [
           { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/launch.sh\" Stop" },
-          { "type": "command", "command": "cmd /c \"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" Stop" }
+          { "type": "command", "command": "\"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" Stop" }
         ]
       }
     ],
@@ -60,7 +60,7 @@
       {
         "hooks": [
           { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/launch.sh\" SubagentStop" },
-          { "type": "command", "command": "cmd /c \"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" SubagentStop" }
+          { "type": "command", "command": "\"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" SubagentStop" }
         ]
       }
     ],
@@ -68,7 +68,7 @@
       {
         "hooks": [
           { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/bin/launch.sh\" PreCompact" },
-          { "type": "command", "command": "cmd /c \"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" PreCompact" }
+          { "type": "command", "command": "\"%CLAUDE_PLUGIN_ROOT%\\bin\\launch.cmd\" PreCompact" }
         ]
       }
     ]
