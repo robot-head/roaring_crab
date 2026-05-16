@@ -23,7 +23,7 @@ fn try_connect_and_send(play: PlayEvent) -> std::io::Result<()> {
     use interprocess::local_socket::Stream;
     let name = socket_path::socket_name()?;
     let mut stream = Stream::connect(name)?;
-    write_frame(&mut stream, &play).map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
+    write_frame(&mut stream, &play).map_err(std::io::Error::other)?;
     Ok(())
 }
 
@@ -62,7 +62,8 @@ fn main() {
     }
 
     // Daemon probably not running — spawn and retry.
-    let client_path = std::env::current_exe().unwrap_or_else(|_| std::path::PathBuf::from("roaring-crab"));
+    let client_path =
+        std::env::current_exe().unwrap_or_else(|_| std::path::PathBuf::from("roaring-crab"));
     let daemon_path = spawn::daemon_sibling_path(&client_path);
     if let Err(e) = spawn::spawn_daemon(&daemon_path) {
         eprintln!("roaring-crab: daemon spawn failed: {}", e);

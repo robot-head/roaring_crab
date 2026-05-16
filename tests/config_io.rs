@@ -28,11 +28,7 @@ fn malformed_toml_returns_error() {
 fn unknown_top_level_field_is_tolerated() {
     let tmp = TempDir::new().unwrap();
     let path = tmp.path().join("config.toml");
-    std::fs::write(
-        &path,
-        "master_volume = 0.5\nfuture_field = \"hello\"\n",
-    )
-    .unwrap();
+    std::fs::write(&path, "master_volume = 0.5\nfuture_field = \"hello\"\n").unwrap();
     let cfg = Config::load_or_default(&path).unwrap();
     assert!((cfg.master_volume - 0.5).abs() < f32::EPSILON);
 }

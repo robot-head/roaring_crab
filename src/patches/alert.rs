@@ -14,7 +14,7 @@ pub fn notification(seed: u64, sample_rate: u32) -> Voice {
     let mut rng = rng_for(seed);
     let detune: f32 = rng.gen_range(-4.0..4.0);
     let root = 440.0 * 2.0f32.powf(detune / 1200.0);
-    let intervals = [1.0f32, 1.2599210, 1.4983071]; // root, M3, P5
+    let intervals = [1.0f32, 1.259_921, 1.4983071]; // root, M3, P5
     Voice::from_fn(total, move |t| {
         let progress = t as f32 / total as f32;
         let idx = (progress * 3.0).floor().clamp(0.0, 2.0) as usize;
@@ -53,7 +53,11 @@ pub fn subagent_stop(seed: u64, sample_rate: u32) -> Voice {
     let root = 392.0 * 2.0f32.powf(detune / 1200.0);
     Voice::from_fn(total, move |t| {
         let progress = t as f32 / total as f32;
-        let hz = if progress < 0.45 { root * 1.2599210 } else { root };
+        let hz = if progress < 0.45 {
+            root * 1.259_921
+        } else {
+            root
+        };
         let env = adsr(t, total, 0.04, 0.20, 0.55, 0.45);
         let s = phase(t, sample_rate, hz).sin();
         let h = 0.2 * phase(t, sample_rate, hz * 2.0).sin();

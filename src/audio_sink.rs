@@ -8,7 +8,9 @@ use std::sync::Arc;
 
 pub trait AudioSink: Send + Sync {
     fn sample_rate(&self) -> u32;
-    fn channels(&self) -> u16 { 2 }
+    fn channels(&self) -> u16 {
+        2
+    }
 }
 
 /// Callback signature: filled by the mixer to write the next chunk of interleaved stereo samples.
@@ -45,7 +47,11 @@ pub mod real {
             let device = host
                 .default_output_device()
                 .ok_or_else(|| anyhow::anyhow!("no default output device"))?;
-            let config: cpal::StreamConfig = device.default_output_config()?.into();
+            let config = cpal::StreamConfig {
+                channels: 2,
+                sample_rate: cpal::SampleRate(48000),
+                buffer_size: cpal::BufferSize::Default,
+            };
             let sample_rate = config.sample_rate.0;
             let stream = device.build_output_stream(
                 &config,
@@ -54,12 +60,17 @@ pub mod real {
                 None,
             )?;
             stream.play()?;
-            Ok(Arc::new(Self { _stream: StreamWrapper(stream), sample_rate }))
+            Ok(Arc::new(Self {
+                _stream: StreamWrapper(stream),
+                sample_rate,
+            }))
         }
     }
 
     impl AudioSink for CpalSink {
-        fn sample_rate(&self) -> u32 { self.sample_rate }
+        fn sample_rate(&self) -> u32 {
+            self.sample_rate
+        }
     }
 }
 
@@ -81,17 +92,22 @@ pub mod null {
             std::thread::spawn(move || {
                 let mut chunk = vec![0.0f32; 512 * 2];
                 loop {
-                    for s in &mut chunk { *s = 0.0; }
+                    chunk.fill(0.0);
                     callback(&mut chunk);
                     cap_clone.lock().extend_from_slice(&chunk);
                     std::thread::sleep(std::time::Duration::from_millis(10));
                 }
             });
-            Arc::new(Self { captured, sample_rate })
+            Arc::new(Self {
+                captured,
+                sample_rate,
+            })
         }
     }
 
     impl AudioSink for NullSink {
-        fn sample_rate(&self) -> u32 { self.sample_rate }
+        fn sample_rate(&self) -> u32 {
+            self.sample_rate
+        }
     }
 }

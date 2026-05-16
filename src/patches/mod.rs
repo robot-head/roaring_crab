@@ -7,12 +7,12 @@
 
 use crate::hook_event::HookEvent;
 use crate::mixer::Voice;
-use rand::SeedableRng;
 use rand::rngs::StdRng;
+use rand::SeedableRng;
 
+pub mod alert;
 pub mod ambient;
 pub mod lifecycle;
-pub mod alert;
 
 /// Produces a voice for the given hook event using the given RNG seed.
 pub fn build(event: HookEvent, seed: u64, sample_rate: u32) -> Voice {

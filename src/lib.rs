@@ -1,10 +1,10 @@
-pub mod hook_event;
-pub mod protocol;
+pub mod audio_sink;
 pub mod config;
-pub mod socket_path;
+pub mod hook_event;
 pub mod lockfile;
 pub mod logging;
-pub mod audio_sink;
 pub mod mixer;
-pub mod spawn;
 pub mod patches;
+pub mod protocol;
+pub mod socket_path;
+pub mod spawn;

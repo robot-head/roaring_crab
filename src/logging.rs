@@ -12,7 +12,10 @@ pub struct RateLimiter {
 
 impl RateLimiter {
     pub fn new(window: Duration) -> Self {
-        Self { window, last_seen: HashMap::new() }
+        Self {
+            window,
+            last_seen: HashMap::new(),
+        }
     }
 
     /// Returns true if the message with this key should be emitted.
@@ -41,7 +44,11 @@ impl RollingLog {
             std::fs::create_dir_all(parent)?;
         }
         let file = OpenOptions::new().create(true).append(true).open(path)?;
-        Ok(Self { path: path.to_path_buf(), cap_bytes, file })
+        Ok(Self {
+            path: path.to_path_buf(),
+            cap_bytes,
+            file,
+        })
     }
 
     pub fn write_line(&mut self, line: &str) -> std::io::Result<()> {
@@ -67,7 +74,10 @@ impl RollingLog {
         }
         std::fs::rename(&self.path, &old)?;
         std::fs::rename(&tmp_path, &self.path)?;
-        self.file = OpenOptions::new().create(true).append(true).open(&self.path)?;
+        self.file = OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(&self.path)?;
         Ok(())
     }
 }

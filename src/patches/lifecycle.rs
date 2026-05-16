@@ -46,7 +46,11 @@ pub fn pre_compact(seed: u64, sample_rate: u32) -> Voice {
     Voice::from_fn(total, move |t| {
         let env = adsr(t, total, 0.15, 0.20, 0.6, 0.40);
         let progress = t as f32 / total as f32;
-        let step_hz = if progress < 0.5 { root * 3.0 } else { root * 4.0 };
+        let step_hz = if progress < 0.5 {
+            root * 3.0
+        } else {
+            root * 4.0
+        };
         let pad_s =
             phase(t, sample_rate, root).sin() + 0.5 * phase(t, sample_rate, root * 2.0).sin();
         let step = 0.3 * phase(t, sample_rate, step_hz).sin();

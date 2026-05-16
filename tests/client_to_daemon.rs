@@ -48,9 +48,7 @@ fn setup_socket_env(
 }
 
 /// Connect to the socket using the interprocess API cross-platform.
-fn connect_to(
-    name_or_path: &str,
-) -> std::io::Result<interprocess::local_socket::Stream> {
+fn connect_to(name_or_path: &str) -> std::io::Result<interprocess::local_socket::Stream> {
     use interprocess::local_socket::traits::Stream as StreamTrait;
     use interprocess::local_socket::Stream;
     if cfg!(windows) {

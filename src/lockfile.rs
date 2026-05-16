@@ -28,7 +28,9 @@ impl Lock {
             std::fs::create_dir_all(parent)?;
         }
         std::fs::write(path, std::process::id().to_string())?;
-        Ok(LockResult::Acquired(Lock { path: path.to_path_buf() }))
+        Ok(LockResult::Acquired(Lock {
+            path: path.to_path_buf(),
+        }))
     }
 }
 

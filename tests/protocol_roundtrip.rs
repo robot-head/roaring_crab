@@ -1,5 +1,5 @@
 use roaring_crab::hook_event::HookEvent;
-use roaring_crab::protocol::{read_frame, write_frame, PlayEvent, FrameError, MAX_FRAME_SIZE};
+use roaring_crab::protocol::{read_frame, write_frame, FrameError, PlayEvent, MAX_FRAME_SIZE};
 use std::io::Cursor;
 
 #[test]
@@ -40,7 +40,11 @@ fn oversized_frame_is_rejected() {
 #[test]
 fn all_hook_event_variants_serialize() {
     for event in HookEvent::ALL {
-        let p = PlayEvent { event, seed: 7, volume: 0.5 };
+        let p = PlayEvent {
+            event,
+            seed: 7,
+            volume: 0.5,
+        };
         let mut buf = Vec::new();
         write_frame(&mut buf, &p).unwrap();
         let decoded = read_frame(&mut Cursor::new(&buf)).unwrap();

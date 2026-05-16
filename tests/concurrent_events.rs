@@ -131,7 +131,13 @@ fn twenty_concurrent_clients_all_succeed_daemon_stays_alive() {
                     cmd.env("RC_SOCKET_PATH", sock.to_str().unwrap());
                 }
                 // Alternate between different events to exercise the dispatcher
-                let events = ["Stop", "PreToolUse", "PostToolUse", "Notification", "UserPromptSubmit"];
+                let events = [
+                    "Stop",
+                    "PreToolUse",
+                    "PostToolUse",
+                    "Notification",
+                    "UserPromptSubmit",
+                ];
                 let event = events[i % events.len()];
                 cmd.args(["--event", event]);
                 cmd.stdin(std::process::Stdio::null())
@@ -163,14 +169,18 @@ fn twenty_concurrent_clients_all_succeed_daemon_stays_alive() {
         }
     }
 
-    assert_eq!(failures, 0, "{} out of {} concurrent clients failed", failures, CONCURRENT_CLIENTS);
+    assert_eq!(
+        failures, 0,
+        "{} out of {} concurrent clients failed",
+        failures, CONCURRENT_CLIENTS
+    );
 
     // Daemon must still be alive
-    let still_alive = daemon
-        .try_wait()
-        .expect("try_wait")
-        .is_none();
-    assert!(still_alive, "daemon exited prematurely while RC_IDLE_SECS=60");
+    let still_alive = daemon.try_wait().expect("try_wait").is_none();
+    assert!(
+        still_alive,
+        "daemon exited prematurely while RC_IDLE_SECS=60"
+    );
 
     // Verify one more connection can still be made
     assert!(

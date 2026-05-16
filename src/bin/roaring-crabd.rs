@@ -58,7 +58,9 @@ fn main() {
     let _lock_guard = match Lock::try_acquire(&lockfile_path()) {
         Ok(LockResult::Acquired(g)) => g,
         Ok(LockResult::Busy) => {
-            let _ = log.lock().write_line("another daemon already running, exiting");
+            let _ = log
+                .lock()
+                .write_line("another daemon already running, exiting");
             return;
         }
         Err(e) => {
@@ -134,11 +136,8 @@ fn main() {
             match conn {
                 Ok(mut stream) => match read_frame(&mut stream) {
                     Ok(play) => {
-                        let voice = patches::build(
-                            play.event,
-                            play.seed,
-                            mixer_for_accept.sample_rate(),
-                        );
+                        let voice =
+                            patches::build(play.event, play.seed, mixer_for_accept.sample_rate());
                         mixer_for_accept.set_master_volume(play.volume);
                         mixer_for_accept.push(voice);
                         last_event_for_accept.store(now_micros(), Ordering::Relaxed);

@@ -13,10 +13,7 @@ pub struct Voice {
 }
 
 impl Voice {
-    pub fn from_fn<F: FnMut(u32) -> (f32, f32) + Send + 'static>(
-        samples: u32,
-        f: F,
-    ) -> Self {
+    pub fn from_fn<F: FnMut(u32) -> (f32, f32) + Send + 'static>(samples: u32, f: F) -> Self {
         Self {
             samples_remaining: samples,
             t_samples: 0,
@@ -51,8 +48,12 @@ impl Mixer {
         }
     }
 
-    pub fn sample_rate(&self) -> u32 { self.sample_rate }
-    pub fn voice_count(&self) -> usize { self.voices.lock().len() }
+    pub fn sample_rate(&self) -> u32 {
+        self.sample_rate
+    }
+    pub fn voice_count(&self) -> usize {
+        self.voices.lock().len()
+    }
 
     pub fn set_master_volume(&self, v: f32) {
         let q = (v.clamp(0.0, 1.0) * 32768.0) as u32;
@@ -101,5 +102,7 @@ impl Mixer {
 }
 
 impl Default for Mixer {
-    fn default() -> Self { Self::new(48000) }
+    fn default() -> Self {
+        Self::new(48000)
+    }
 }
