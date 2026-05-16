@@ -1,0 +1,13 @@
+/target
+Cargo.lock.bak
+*.swp
+.DS_Store
+
+# Prebuilt binaries are downloaded on first hook fire from GitHub Releases,
+# not committed. CI's release.yml publishes archives; bin/launcher.js fetches
+# them lazily into the per-platform subdir below.
+bin/windows-x86_64/
+bin/linux-x86_64/
+bin/linux-aarch64/
+bin/macos-x86_64/
+bin/macos-aarch64/

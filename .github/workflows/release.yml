@@ -1,0 +1,96 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            dir: linux-x86_64
+            archive: roaring-crab-linux-x86_64.tar.gz
+            ext: ""
+          # aarch64-unknown-linux-gnu is intentionally omitted: cross-compile
+          # via `cross` needs target-arch ALSA headers in the Docker image and
+          # isn't wired up yet. Linux users on aarch64 will need to build from
+          # source until we revisit this.
+          - target: x86_64-apple-darwin
+            os: macos-latest
+            dir: macos-x86_64
+            archive: roaring-crab-macos-x86_64.tar.gz
+            ext: ""
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            dir: macos-aarch64
+            archive: roaring-crab-macos-aarch64.tar.gz
+            ext: ""
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            dir: windows-x86_64
+            archive: roaring-crab-windows-x86_64.zip
+            ext: ".exe"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - name: Install ALSA dev headers (Linux x86_64)
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        run: sudo apt-get update && sudo apt-get install -y libasound2-dev
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }} --bins
+      - name: Ad-hoc sign (macOS only)
+        if: startsWith(matrix.target, 'aarch64-apple') || startsWith(matrix.target, 'x86_64-apple')
+        run: |
+          codesign --force --sign - target/${{ matrix.target }}/release/roaring-crab
+          codesign --force --sign - target/${{ matrix.target }}/release/roaring-crabd
+      - name: Package archive (Unix tar.gz)
+        if: matrix.os != 'windows-latest'
+        shell: bash
+        run: |
+          mkdir -p staging
+          cp target/${{ matrix.target }}/release/roaring-crab staging/
+          cp target/${{ matrix.target }}/release/roaring-crabd staging/
+          chmod +x staging/roaring-crab staging/roaring-crabd
+          tar -czf ${{ matrix.archive }} -C staging roaring-crab roaring-crabd
+      - name: Package archive (Windows zip)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path staging | Out-Null
+          Copy-Item "target\${{ matrix.target }}\release\roaring-crab.exe" staging\
+          Copy-Item "target\${{ matrix.target }}\release\roaring-crabd.exe" staging\
+          Compress-Archive -Force -Path staging\* -DestinationPath ${{ matrix.archive }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: archive-${{ matrix.dir }}
+          path: ${{ matrix.archive }}
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Flatten archive directory
+        run: |
+          mkdir -p release
+          find artifacts -type f \( -name '*.tar.gz' -o -name '*.zip' \) -exec cp {} release/ \;
+          ls -la release/
+      - name: Create release with archive assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*
+          generate_release_notes: true
+          fail_on_unmatched_files: true

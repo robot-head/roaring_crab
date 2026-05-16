@@ -1,0 +1,8 @@
+{
+  "name": "roaring-crab",
+  "description": "Plays generated analog-modeling synth sounds on Claude Code hook events. Cross-platform Rust daemon.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Matthew Stone"
+  }
+}
