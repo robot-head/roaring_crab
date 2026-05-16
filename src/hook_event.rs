@@ -4,6 +4,7 @@ use std::str::FromStr;
 #[derive(
     Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, clap::ValueEnum,
 )]
+#[clap(rename_all = "PascalCase")]
 pub enum HookEvent {
     SessionStart,
     SessionEnd,
