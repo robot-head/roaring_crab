@@ -72,3 +72,58 @@ pub(crate) fn lp_alpha(sample_rate: u32, cutoff_hz: f32) -> f32 {
     let rc = 1.0 / (std::f32::consts::TAU * cutoff_hz.max(1.0));
     dt / (rc + dt)
 }
+
+/// Given normalized progress in [0, 1] and a chord count, returns
+/// (chord_index, fractional_position_within_chord).
+#[allow(dead_code)]
+pub(crate) fn chord_step(progress: f32, n_chords: usize) -> (usize, f32) {
+    if n_chords == 0 {
+        return (0, 0.0);
+    }
+    let scaled = progress.clamp(0.0, 0.99999) * n_chords as f32;
+    let idx = (scaled.floor() as usize).min(n_chords - 1);
+    (idx, (scaled - idx as f32).clamp(0.0, 1.0))
+}
+
+/// Quick attack envelope applied at each chord change. `frac` is the
+/// fractional position within the current chord segment. Returns a multiplier
+/// in [0, 1] that ramps up over the first `attack` fraction of each chord.
+#[allow(dead_code)]
+pub(crate) fn chord_attack(frac: f32, attack: f32) -> f32 {
+    if frac < attack {
+        (frac / attack).clamp(0.0, 1.0)
+    } else {
+        1.0
+    }
+}
+
+/// Common chord shapes as frequency ratios relative to a root.
+/// Each is a triad in just-intonation-ish form (good enough for our purposes).
+#[allow(dead_code)]
+pub(crate) mod chords {
+    /// Minor triad: root, m3, P5
+    pub const MINOR: [f32; 3] = [1.0, 1.189_207, 1.498_307];
+    /// Major triad: root, M3, P5
+    pub const MAJOR: [f32; 3] = [1.0, 1.259_921, 1.498_307];
+    /// Sus4: root, P4, P5
+    pub const SUS4: [f32; 3] = [1.0, 1.334_84, 1.498_307];
+    /// Sus2: root, M2, P5
+    pub const SUS2: [f32; 3] = [1.0, 1.122_462, 1.498_307];
+    /// Minor 7: root, m3, P5, m7
+    pub const MINOR7: [f32; 4] = [1.0, 1.189_207, 1.498_307, 1.781_797];
+    /// Dominant 7: root, M3, P5, m7
+    pub const DOM7: [f32; 4] = [1.0, 1.259_921, 1.498_307, 1.781_797];
+    /// Major 7: root, M3, P5, M7
+    pub const MAJOR7: [f32; 4] = [1.0, 1.259_921, 1.498_307, 1.887_749];
+}
+
+/// A single chord in a progression: a root multiplier (relative to the patch's
+/// fundamental) plus a slice of interval ratios (from `chords::*`).
+#[derive(Clone, Copy)]
+#[allow(dead_code)]
+pub(crate) struct ProgChord {
+    /// Root multiplier (e.g., 1.0 = i, 1.498 = v, 1.189 = III in a minor key).
+    pub root: f32,
+    /// Reference to a chord-shape constant.
+    pub shape: &'static [f32],
+}
