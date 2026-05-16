@@ -124,9 +124,14 @@ fn client_lazy_spawns_daemon_then_daemon_idle_exits() {
         "daemon was not reachable after client lazy-spawn"
     );
 
-    // Now wait up to 5s for the daemon to idle-exit (RC_IDLE_SECS=2)
-    // We allow up to 5s of wall time (2s idle + up to 3s polling slack)
-    let down_deadline = Instant::now() + Duration::from_secs(5);
+    // Wait up to 10s for the daemon to idle-exit (RC_IDLE_SECS=2). Generous
+    // slack because:
+    //   - the longest patch voice (lifecycle pad, 2.2s) plus the 2s idle
+    //     window plus a 1s watchdog tick latency = ~5s minimum;
+    //   - on slow CI runners (macOS especially), the NullSink audio thread
+    //     advances samples at less than real time, stretching the wall-clock
+    //     duration of any active voice. 10s comfortably covers both.
+    let down_deadline = Instant::now() + Duration::from_secs(10);
     assert!(
         poll_until_down(&socket_name, down_deadline),
         "daemon did not idle-exit after the idle timeout"
