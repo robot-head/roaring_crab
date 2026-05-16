@@ -1130,6 +1130,7 @@ dependencies = [
  "clap",
  "cpal",
  "directories",
+ "errno",
  "fundsp",
  "interprocess",
  "libc",
