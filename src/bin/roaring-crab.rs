@@ -70,12 +70,14 @@ fn main() {
         return;
     }
 
-    let deadline = Instant::now() + Duration::from_millis(200);
+    // WASAPI cold-start on Windows can take several hundred ms before the
+    // daemon binds its socket. Give it up to 1.5s on first spawn.
+    let deadline = Instant::now() + Duration::from_millis(1500);
     while Instant::now() < deadline {
         if try_connect_and_send(play).is_ok() {
             return;
         }
-        std::thread::sleep(Duration::from_millis(10));
+        std::thread::sleep(Duration::from_millis(20));
     }
     eprintln!("roaring-crab: daemon slow to start, skipping event");
 }

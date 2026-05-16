@@ -69,7 +69,15 @@ fn main() {
         }
     };
 
-    let mixer = Arc::new(Mixer::new(48000));
+    // Probe the actual device sample rate so the mixer matches what cpal will
+    // open. Patches' phase math depends on the exact rate; a 44.1k device
+    // would otherwise play 48k-built patches ~9% sharp.
+    #[cfg(not(feature = "null-audio"))]
+    let sample_rate = roaring_crab::audio_sink::real::default_sample_rate().unwrap_or(48000);
+    #[cfg(feature = "null-audio")]
+    let sample_rate = 48000u32;
+
+    let mixer = Arc::new(Mixer::new(sample_rate));
     let last_event = Arc::new(AtomicI64::new(now_micros()));
 
     // Open audio sink
@@ -79,7 +87,7 @@ fn main() {
     let _sink: Arc<dyn AudioSink> = if use_null_audio() {
         #[cfg(feature = "null-audio")]
         {
-            roaring_crab::audio_sink::null::NullSink::open(callback, 48000)
+            roaring_crab::audio_sink::null::NullSink::open(callback, sample_rate)
         }
         #[cfg(not(feature = "null-audio"))]
         {
@@ -106,7 +114,7 @@ fn main() {
         }
         #[cfg(feature = "null-audio")]
         {
-            roaring_crab::audio_sink::null::NullSink::open(callback, 48000)
+            roaring_crab::audio_sink::null::NullSink::open(callback, sample_rate)
         }
     };
 

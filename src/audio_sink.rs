@@ -41,17 +41,27 @@ pub mod real {
         sample_rate: u32,
     }
 
+    /// Probes the default output device for its negotiated sample rate without
+    /// opening a stream. Used by the daemon to configure its mixer to match.
+    pub fn default_sample_rate() -> anyhow::Result<u32> {
+        let host = cpal::default_host();
+        let device = host
+            .default_output_device()
+            .ok_or_else(|| anyhow::anyhow!("no default output device"))?;
+        let config: cpal::StreamConfig = device.default_output_config()?.into();
+        Ok(config.sample_rate.0)
+    }
+
     impl CpalSink {
+        /// Opens an f32 stereo output stream using the device's default config.
+        /// Returns the negotiated sample rate so the mixer can be configured to
+        /// match (patches' phase calculations depend on the exact rate).
         pub fn open(mut callback: AudioCallback) -> anyhow::Result<Arc<Self>> {
             let host = cpal::default_host();
             let device = host
                 .default_output_device()
                 .ok_or_else(|| anyhow::anyhow!("no default output device"))?;
-            let config = cpal::StreamConfig {
-                channels: 2,
-                sample_rate: cpal::SampleRate(48000),
-                buffer_size: cpal::BufferSize::Default,
-            };
+            let config: cpal::StreamConfig = device.default_output_config()?.into();
             let sample_rate = config.sample_rate.0;
             let stream = device.build_output_stream(
                 &config,
