@@ -1,6 +1,6 @@
 use crate::mixer::Voice;
 use crate::patches::{adsr, cents, chord_attack, chord_step, chords, phase, rng_for, ProgChord};
-use rand::Rng;
+use rand::RngExt;
 
 const DUR_MS: u32 = 900;
 
@@ -15,8 +15,8 @@ fn dur_samples(sample_rate: u32) -> u32 {
 pub fn notification(seed: u64, sample_rate: u32) -> Voice {
     let total = dur_samples(sample_rate);
     let mut rng = rng_for(seed);
-    let detune: f32 = rng.gen_range(-5.0..5.0);
-    let chorus_cents: f32 = rng.gen_range(5.0..10.0);
+    let detune: f32 = rng.random_range(-5.0..5.0);
+    let chorus_cents: f32 = rng.random_range(5.0..10.0);
     let root = 440.0 * cents(detune);
 
     // I (major) → V (dom7), each chord arpeggiated over its segment.
@@ -66,9 +66,9 @@ pub fn notification(seed: u64, sample_rate: u32) -> Voice {
 pub fn stop(seed: u64, sample_rate: u32) -> Voice {
     let total = dur_samples(sample_rate);
     let mut rng = rng_for(seed);
-    let detune: f32 = rng.gen_range(-4.0..4.0);
-    let trem_hz: f32 = rng.gen_range(4.5..7.0);
-    let shimmer_amount: f32 = rng.gen_range(0.05..0.12);
+    let detune: f32 = rng.random_range(-4.0..4.0);
+    let trem_hz: f32 = rng.random_range(4.5..7.0);
+    let shimmer_amount: f32 = rng.random_range(0.05..0.12);
     let root = 330.0 * cents(detune);
 
     // ii (minor7) → V (dom7) → I (major7). Slices: 30% / 30% / 40%.
@@ -134,8 +134,8 @@ pub fn stop(seed: u64, sample_rate: u32) -> Voice {
 pub fn subagent_stop(seed: u64, sample_rate: u32) -> Voice {
     let total = dur_samples(sample_rate);
     let mut rng = rng_for(seed);
-    let detune: f32 = rng.gen_range(-5.0..5.0);
-    let chorus_cents: f32 = rng.gen_range(4.0..8.0);
+    let detune: f32 = rng.random_range(-5.0..5.0);
+    let chorus_cents: f32 = rng.random_range(4.0..8.0);
     let root = 392.0 * cents(detune);
 
     let prog: [ProgChord; 2] = [

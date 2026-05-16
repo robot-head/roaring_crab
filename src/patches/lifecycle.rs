@@ -2,7 +2,7 @@ use crate::mixer::Voice;
 use crate::patches::{
     adsr, cents, chord_attack, chord_step, chords, lp_alpha, phase, rng_for, ProgChord,
 };
-use rand::Rng;
+use rand::RngExt;
 
 const DUR_MS: u32 = 2200;
 
@@ -22,12 +22,12 @@ fn pad(
 ) -> Voice {
     let total = dur_samples(sample_rate);
     let mut rng = rng_for(seed);
-    let coarse_detune: f32 = rng.gen_range(-4.0..4.0);
-    let spread: f32 = rng.gen_range(6.0..14.0); // cents spread between voices
-    let trem_hz: f32 = rng.gen_range(2.3..4.7);
-    let filter_lfo_hz: f32 = rng.gen_range(0.18..0.35);
-    let cutoff_low: f32 = rng.gen_range(700.0..1100.0);
-    let cutoff_high: f32 = rng.gen_range(2200.0..3400.0);
+    let coarse_detune: f32 = rng.random_range(-4.0..4.0);
+    let spread: f32 = rng.random_range(6.0..14.0); // cents spread between voices
+    let trem_hz: f32 = rng.random_range(2.3..4.7);
+    let filter_lfo_hz: f32 = rng.random_range(0.18..0.35);
+    let cutoff_low: f32 = rng.random_range(700.0..1100.0);
+    let cutoff_high: f32 = rng.random_range(2200.0..3400.0);
 
     let root = root_hz * cents(coarse_detune);
 
@@ -144,9 +144,9 @@ const PRE_COMPACT_PROG: &[ProgChord] = &[
 pub fn pre_compact(seed: u64, sample_rate: u32) -> Voice {
     let total = dur_samples(sample_rate);
     let mut rng = rng_for(seed);
-    let coarse_detune: f32 = rng.gen_range(-6.0..6.0);
-    let wobble_hz: f32 = rng.gen_range(4.5..7.0);
-    let wobble_depth: f32 = rng.gen_range(2.5..5.5);
+    let coarse_detune: f32 = rng.random_range(-6.0..6.0);
+    let wobble_hz: f32 = rng.random_range(4.5..7.0);
+    let wobble_depth: f32 = rng.random_range(2.5..5.5);
     let root = 196.0 * cents(coarse_detune);
 
     let mut lp = 0.0f32;
