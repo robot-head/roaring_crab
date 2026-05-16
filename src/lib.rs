@@ -7,4 +7,4 @@ pub mod logging;
 pub mod audio_sink;
 pub mod mixer;
 pub mod spawn { }
-pub mod patches { }
+pub mod patches;
