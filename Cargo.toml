@@ -24,7 +24,7 @@ null-audio = []
 [dependencies]
 clap = { version = "4", features = ["derive"] }
 serde = { version = "1", features = ["derive"] }
-bincode = "1.3"
+bincode = "3.0"
 toml = "0.8"
 rand = "0.8"
 directories = "5"
