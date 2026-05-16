@@ -84,20 +84,18 @@ function fetchToFile(url, dest, redirectsLeft = 5) {
 }
 
 function extractArchive(archivePath, destDir) {
-  if (archivePath.endsWith('.zip')) {
-    if (process.platform === 'win32') {
-      execSync(
-        `powershell -NoProfile -Command "Expand-Archive -Force -LiteralPath '${archivePath}' -DestinationPath '${destDir}'"`,
-        { stdio: 'ignore' }
-      );
-    } else {
-      execSync(`unzip -o "${archivePath}" -d "${destDir}"`, { stdio: 'ignore' });
-    }
-  } else if (archivePath.endsWith('.tar.gz') || archivePath.endsWith('.tgz')) {
-    execSync(`tar -xzf "${archivePath}" -C "${destDir}"`, { stdio: 'ignore' });
-  } else {
-    throw new Error(`unknown archive type: ${archivePath}`);
-  }
+  // bsdtar (the `tar` shipped with Windows 10+, macOS, and most Linux distros)
+  // handles both .zip and .tar.gz transparently. On Windows we explicitly call
+  // the system tar to avoid hitting Git Bash's BusyBox tar, which doesn't
+  // unpack zips.
+  const tar =
+    process.platform === 'win32'
+      ? `${process.env.SystemRoot || 'C:\\Windows'}\\System32\\tar.exe`
+      : 'tar';
+  const flags = archivePath.endsWith('.zip') ? '-xf' : '-xzf';
+  execSync(`"${tar}" ${flags} "${archivePath}" -C "${destDir}"`, {
+    stdio: 'ignore',
+  });
 }
 
 async function ensureBinary(info, binDir, binPath) {

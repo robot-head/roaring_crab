@@ -15,7 +15,7 @@ This plugin ships prebuilt binaries under `bin/<platform>/`. No Rust toolchain r
 
 The download happens silently; if it fails (offline, GitHub down), the hook exits 0 and the next event will retry. Until the first download completes, the very first hook fire is silent.
 
-**Requirements:** Node.js (always present when running Claude Code), plus the standard archive tools on each platform — `tar`/`gzip` on Unix, PowerShell's `Expand-Archive` on Windows. All of these ship with the OS.
+**Requirements:** Node.js (always present when running Claude Code) and the `tar` binary. On Linux and macOS that's the default; on Windows 10 1803+ and Windows 11 the system ships `bsdtar` at `C:\Windows\System32\tar.exe`, which handles both `.tar.gz` and `.zip`.
 
 ### Platform notes
 
