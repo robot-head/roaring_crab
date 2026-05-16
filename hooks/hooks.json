@@ -2,83 +2,47 @@
   "hooks": {
     "SessionStart": [
       { "hooks": [
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/windows-x86_64/roaring-crab.exe", "args": ["--event", "SessionStart"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-x86_64/roaring-crab", "args": ["--event", "SessionStart"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-aarch64/roaring-crab", "args": ["--event", "SessionStart"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-x86_64/roaring-crab", "args": ["--event", "SessionStart"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-aarch64/roaring-crab", "args": ["--event", "SessionStart"] }
+        { "type": "command", "command": "node", "args": ["${CLAUDE_PLUGIN_ROOT}/bin/launcher.js", "SessionStart"] }
       ] }
     ],
     "SessionEnd": [
       { "hooks": [
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/windows-x86_64/roaring-crab.exe", "args": ["--event", "SessionEnd"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-x86_64/roaring-crab", "args": ["--event", "SessionEnd"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-aarch64/roaring-crab", "args": ["--event", "SessionEnd"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-x86_64/roaring-crab", "args": ["--event", "SessionEnd"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-aarch64/roaring-crab", "args": ["--event", "SessionEnd"] }
+        { "type": "command", "command": "node", "args": ["${CLAUDE_PLUGIN_ROOT}/bin/launcher.js", "SessionEnd"] }
       ] }
     ],
     "UserPromptSubmit": [
       { "hooks": [
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/windows-x86_64/roaring-crab.exe", "args": ["--event", "UserPromptSubmit"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-x86_64/roaring-crab", "args": ["--event", "UserPromptSubmit"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-aarch64/roaring-crab", "args": ["--event", "UserPromptSubmit"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-x86_64/roaring-crab", "args": ["--event", "UserPromptSubmit"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-aarch64/roaring-crab", "args": ["--event", "UserPromptSubmit"] }
+        { "type": "command", "command": "node", "args": ["${CLAUDE_PLUGIN_ROOT}/bin/launcher.js", "UserPromptSubmit"] }
       ] }
     ],
     "PreToolUse": [
       { "hooks": [
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/windows-x86_64/roaring-crab.exe", "args": ["--event", "PreToolUse"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-x86_64/roaring-crab", "args": ["--event", "PreToolUse"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-aarch64/roaring-crab", "args": ["--event", "PreToolUse"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-x86_64/roaring-crab", "args": ["--event", "PreToolUse"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-aarch64/roaring-crab", "args": ["--event", "PreToolUse"] }
+        { "type": "command", "command": "node", "args": ["${CLAUDE_PLUGIN_ROOT}/bin/launcher.js", "PreToolUse"] }
       ] }
     ],
     "PostToolUse": [
       { "hooks": [
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/windows-x86_64/roaring-crab.exe", "args": ["--event", "PostToolUse"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-x86_64/roaring-crab", "args": ["--event", "PostToolUse"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-aarch64/roaring-crab", "args": ["--event", "PostToolUse"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-x86_64/roaring-crab", "args": ["--event", "PostToolUse"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-aarch64/roaring-crab", "args": ["--event", "PostToolUse"] }
+        { "type": "command", "command": "node", "args": ["${CLAUDE_PLUGIN_ROOT}/bin/launcher.js", "PostToolUse"] }
       ] }
     ],
     "Notification": [
       { "hooks": [
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/windows-x86_64/roaring-crab.exe", "args": ["--event", "Notification"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-x86_64/roaring-crab", "args": ["--event", "Notification"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-aarch64/roaring-crab", "args": ["--event", "Notification"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-x86_64/roaring-crab", "args": ["--event", "Notification"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-aarch64/roaring-crab", "args": ["--event", "Notification"] }
+        { "type": "command", "command": "node", "args": ["${CLAUDE_PLUGIN_ROOT}/bin/launcher.js", "Notification"] }
       ] }
     ],
     "Stop": [
       { "hooks": [
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/windows-x86_64/roaring-crab.exe", "args": ["--event", "Stop"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-x86_64/roaring-crab", "args": ["--event", "Stop"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-aarch64/roaring-crab", "args": ["--event", "Stop"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-x86_64/roaring-crab", "args": ["--event", "Stop"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-aarch64/roaring-crab", "args": ["--event", "Stop"] }
+        { "type": "command", "command": "node", "args": ["${CLAUDE_PLUGIN_ROOT}/bin/launcher.js", "Stop"] }
       ] }
     ],
     "SubagentStop": [
       { "hooks": [
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/windows-x86_64/roaring-crab.exe", "args": ["--event", "SubagentStop"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-x86_64/roaring-crab", "args": ["--event", "SubagentStop"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-aarch64/roaring-crab", "args": ["--event", "SubagentStop"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-x86_64/roaring-crab", "args": ["--event", "SubagentStop"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-aarch64/roaring-crab", "args": ["--event", "SubagentStop"] }
+        { "type": "command", "command": "node", "args": ["${CLAUDE_PLUGIN_ROOT}/bin/launcher.js", "SubagentStop"] }
       ] }
     ],
     "PreCompact": [
       { "hooks": [
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/windows-x86_64/roaring-crab.exe", "args": ["--event", "PreCompact"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-x86_64/roaring-crab", "args": ["--event", "PreCompact"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/linux-aarch64/roaring-crab", "args": ["--event", "PreCompact"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-x86_64/roaring-crab", "args": ["--event", "PreCompact"] },
-        { "type": "command", "command": "${CLAUDE_PLUGIN_ROOT}/bin/macos-aarch64/roaring-crab", "args": ["--event", "PreCompact"] }
+        { "type": "command", "command": "node", "args": ["${CLAUDE_PLUGIN_ROOT}/bin/launcher.js", "PreCompact"] }
       ] }
     ]
   }
