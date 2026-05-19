@@ -28,7 +28,7 @@ wincode = { version = "0.5", features = ["derive"] }
 toml = "1.1"
 rand = "0.10"
 directories = "6"
-cpal = "0.15"
+cpal = "0.17"
 errno = "0.3"
 interprocess = "2"
 parking_lot = "0.12"
